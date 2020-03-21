@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include vnkomv.nextcloud"
+      include_role:
+        name: "vnkomv.nextcloud"

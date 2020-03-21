@@ -1,0 +1,5 @@
+---
+# tasks file for vnkomv.nextcloud
+- name: Molecule Hello World!
+  debug:
+    msg: Hello, World!
