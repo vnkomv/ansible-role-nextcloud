@@ -1,5 +1,8 @@
 ---
 # tasks file for vnkomv.nextcloud
-- name: Molecule Hello World!
+
+- include_tasks: config-redis.yml
+
+- name: You're good to go for Nextcloud installation
   debug:
-    msg: Hello, World!
+    msg: Nextcloud dependencies installed and configured.

@@ -1,11 +1,23 @@
 ---
 # defaults file for vnkomv.nextcloud
-install_path: /var/www/box
-box_database: nextcloud
-apache_mods: 
+
+# webserver
+webserver_user: apache
+webserver_group: apache
+webserver_modules: 
   - rewrite.load
-redis_listen_socket: /var/run/redis.sock
-php_fpm_listen_socket: /var/run/php72-fpm.sock
+install_path: /var/www/nextcloud
+
+# database
+db_name: nextcloud
+db_user: nexcloud
+db_password: secure-password
+
+# redis
+redis_socket: /var/run/redis.sock
+
+# PHP
+php_fpm_socket: /var/run/php72-fpm.sock
 php_extensions:
   - php
   - php-fpm

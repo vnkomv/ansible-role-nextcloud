@@ -1,0 +1,7 @@
+---
+- name: Add webserver user to redis group
+  user:
+    name: "{{ webserver_user }}"
+    append: yes
+    groups: redis
+    create_home: no

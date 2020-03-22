@@ -7,12 +7,12 @@ dependencies:
     vars:
       apache_create_vhosts: true
       apache_remove_default_vhost: true
-      apache_mods_enabled: "{{ apache_mods }}"
+      apache_mods_enabled: "{{ webserver_modules }}"
       apache_vhosts:
         - servername: "local.dev"
           documentroot: "{{ install_path }}"
           extra_parameters: |
-              ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix://{{ php_fpm_listen_socket }}|fcgi://localhost/{{ install_path }}"
+              ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix://{{ php_fpm_socket }}|fcgi://localhost/{{ install_path }}"
 
   - src: geerlingguy.php
     vars:
@@ -24,7 +24,7 @@ dependencies:
       php_enable_apc: true
       php_enablerepo: remi-php72
       php_packages_state: latest
-      php_fpm_listen: "{{ php_fpm_listen_socket }}"
+      php_fpm_listen: "{{ php_fpm_socket }}"
 
   - src: geerlingguy.apache-php-fpm
 
@@ -32,16 +32,21 @@ dependencies:
     become: yes
     vars:
       mysql_databases: 
-        - name: "{{ box_database }}"
+        - name: "{{ db_name }}"
           encoding: utf8
           collation: utf8_general_ci
+      mysql_users:
+        - name: "{{ db_user }}"
+          password: "{{ db_password }}"
+          host: localhost
+          priv: "{{ db_name}}.*:ALL"
       mysql_enablerepo: "remi"
       mysql_root_password: super-secure-password
 
   - src: geerlingguy.redis
     vars:
       redis_enablerepo: epel
-      # redis_unixsocket: "{{ redis_listen_socket }}"
+      # redis_unixsocket: "{{ redis_socket }}"
 
 
 galaxy_info:
