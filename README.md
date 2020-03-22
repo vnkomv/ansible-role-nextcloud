@@ -16,7 +16,15 @@ A description of the settable variables for this role should go here, including 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+This role depend on the roles listed below. It is not necessary to configure them since this role already does it.
+
+- geerlingguy.repo-epel
+- geerlingguy.repo-remi
+- geerlingguy.apache
+- geerlingguy.php
+- geerlingguy.apache-php-fpm
+- geerlingguy.mysql
+- geerlingguy.redis
 
 Example Playbook
 ----------------
@@ -25,14 +33,14 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - vnkomv.nextcloud
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+This role was created in 2020 by [Désiré-Lévi Kouablan](https://levikouablan.net).
