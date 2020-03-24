@@ -1,0 +1,25 @@
+---
+- name: Config webserver and redis user
+  user:
+    name: "{{ item.name }}"
+    append: yes
+    groups: " {{ item.group }} "
+    create_home: no
+  loop:
+    - { name: "{{ webserver_user}}", group: "redis" }
+    - { name: "redis", group: "{{ webserver_group }}" }
+
+- name: Ensure redis socket folder exists
+  file:
+    path: "{{ redis_socket_folder }}"
+    state: directory
+    owner: redis
+    group: "{{ webserver_group }}"
+
+- name: Add permission for socket file in redis config
+  lineinfile:
+    dest: "{{ redis_config_file }}"
+    regexp: '^unixsocketperm.+$'
+    line: "unixsocketperm 775"
+    state: present
+  notify: restart redis
