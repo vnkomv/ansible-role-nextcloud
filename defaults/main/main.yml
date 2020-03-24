@@ -1,12 +1,31 @@
 ---
 # defaults file for vnkomv.nextcloud
 
+# nextcloud
+
+nextcloud_root: /var/www/nextcloud
+nextcloud_data_dir: /var/lib/nextcloud/data
+nextcloud_archive: https://download.nextcloud.com/server/releases/latest-18.zip
+nextcloud_archive_md5: cb08e30172ef71be28ed2119642871ad
+nextcloud_admin_user: admin
+nextcloud_admin_password: password
+
+# utilities
+utilities_packages:
+  - unzip
+pip_packages:
+  - pyOpenSSL
+
 # webserver
-webserver_user: apache
-webserver_group: apache
-webserver_modules: 
-  - rewrite.load
-install_path: /var/www/nextcloud
+webserver_root: /var/www
+webserver_user: nginx
+webserver_group: nginx
+webserver_max_body_size: 2048m
+webserver_site_conf_dir: /etc/nginx/conf.d
+ssl_certificate_folder: /etc/ssl/nginx
+ssl_certificate: /etc/ssl/nginx/nextcloud.pem
+ssl_certificate_csr: /etc/ssl/nginx/nextcloud.csr
+ssl_certificate_key: /etc/ssl/nginx/nextcloud.key
 
 # database
 db_name: nextcloud
@@ -14,4 +33,6 @@ db_user: nexcloud
 db_password: secure-password
 
 # redis
-redis_socket: /var/run/redis.sock
+redis_socket_folder: /var/run/redis
+redis_socket: /var/run/redis/redis.sock
+redis_config_file: /etc/redis.conf

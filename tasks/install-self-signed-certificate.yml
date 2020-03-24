@@ -1,0 +1,38 @@
+---
+
+- name: Check certificate existence
+  stat:
+    path: "{{ ssl_certificate }}"
+  register: cert_pem
+
+- name: Check certificate key existence
+  stat:
+    path: "{{ ssl_certificate_key }}"  
+  register: cert_key
+
+
+- block:
+
+    - name: Ensure directory exists for certificate
+      file:
+        path: "{{ ssl_certificate_folder }}"
+        state: directory
+
+    - name: Generate private key for self-signed certifcate
+      openssl_privatekey:
+        path: "{{ ssl_certificate_key }}"
+    
+    - name: Generate CSR for self-signed certifcate
+      openssl_csr:
+        path: "{{ ssl_certificate_csr }}"
+        privatekey_path: "{{ ssl_certificate_key }}"
+        force: true
+    
+    - name: Generate for self-signed certifcate
+      openssl_certificate:
+        path: "{{ ssl_certificate }}"
+        privatekey_path: "{{ ssl_certificate_key }}"
+        csr_path:  "{{ ssl_certificate_csr }}"
+        provider: selfsigned
+
+  when: cert_pem.stat.exists == False or cert_key.stat.exists == False

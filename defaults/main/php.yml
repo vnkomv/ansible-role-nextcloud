@@ -1,8 +1,20 @@
 ---
 # defaults for PHP
-php_fpm_socket: /var/run/php72-fpm.sock
+php_memory_limit: "1024M"
+php_max_file_uploads: "100"
+php_upload_max_filesize: "2048M"
+php_max_execution_time: "150"
+php_opcache_enable: "1"
+php_opcache_enable_cli: "1"
+php_version: php73
+php_fpm_socket: /var/run/php73-fpm.sock
+php_fpm_pool_user: nginx
+php_fpm_pool_group: nginx
+php_webserver_daemon: nginx
+php_enable_webserver: true
 php_extensions:
   - php
+  - php-opcache
   - php-fpm
   - php-cli
   - php-json
@@ -21,4 +33,17 @@ php_extensions:
   - php-smbclient
   - php-ldap
   - php-bz2
+  - php-bcmath
   - php-pecl-redis  
+  - php-pecl-ssh2
+  - php-pecl-mcrypt
+  - php-intl
+  - php-posix
+  - php-openssl
+  - php-phar
+  - php-xmlwriter
+  - php-ftp
+  - php-fileinfo
+  - php-zlib
+  - php-gmp
+  - php-iconv
