@@ -1,0 +1,69 @@
+---
+- name: Download Nextcloud
+  unarchive:
+    src: "{{ nextcloud_archive }}"
+    dest: "{{ webserver_root }}"
+    owner: "{{ webserver_user }}"
+    remote_src: true
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ webserver_user }}"
+    group: "{{ webserver_group }}"
+    recurse: yes
+    state: directory
+  loop:
+    - "{{ nextcloud_root }}"
+    - "{{ nextcloud_data_dir }}"
+
+- name: Ensure occ is executable
+  file:
+    path: "{{ nextcloud_root }}/occ"
+    mode: a+x
+
+- name: Install nextcloud
+  command: >
+    php {{ nextcloud_root }}/occ maintenance:install --database "mysql" --database-name "{{ db_name }}"
+    --database-user "{{ db_user }}" --database-pass "{{ db_password }}"
+    --admin-user "{{ nextcloud_admin_user }}" --admin-pass "{{ nextcloud_admin_password }}" --data-dir "{{ nextcloud_data_dir }}"
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+
+# configure trusted host to allow access
+- name: Add hostname to trusted host if defined
+  command: 'php {{ nextcloud_root }}/occ config:system:set trusted_domains 1 --value "{{ nextcloud_server_host }}"'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+- name: Add ip adress to trusted host if defined
+  command: 'php {{ nextcloud_root }}/occ config:system:set trusted_domains 2 --value "{{ nextcloud_server_ip }}"'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+
+# performance tuning
+- name: nextcloud tuning - configure APCu for local caching
+  command: 'php {{ nextcloud_root }}/occ config:system:set memcache.local --value "\OC\Memcache\APCu"'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+
+- name: nextcloud tuning - connect to redis on unixsocket
+  command: 'php {{ nextcloud_root }}/occ config:system:set redis "host" --value "{{ redis_socket }}"'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+
+- name: nextcloud tuning - connect to redis on unixsocket, set port to 0
+  command: 'php {{ nextcloud_root }}/occ config:system:set redis "port" --value 0'
+  become: true
+  become_user: nginx
+  changed_when: true
+
+- name: nextcloud tuning - use redis for file locking
+  command: 'php {{ nextcloud_root }}/occ config:system:set memcache.locking --value "\OC\Memcache\Redis"'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true

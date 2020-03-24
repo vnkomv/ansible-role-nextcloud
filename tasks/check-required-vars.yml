@@ -1,0 +1,6 @@
+---
+# check that required variables are provided
+- name: "check that required variables are provided"
+  assert:
+    that:
+        - nextcloud_server_host is defined or nextcloud_server_ip is defined

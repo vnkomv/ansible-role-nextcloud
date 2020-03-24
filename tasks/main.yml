@@ -1,7 +1,16 @@
 ---
 # tasks file for vnkomv.nextcloud
 
-- include_tasks: config-redis.yml
+# install required tools and python packages
+- include_tasks: install-required-tools.yml
+
+# configure components
+- include_tasks: configure-nginx.yml
+- include_tasks: configure-php-fpm.yml
+- include_tasks: configure-redis.yml
+
+# install and configure nextcloud
+- include_tasks: install-nextcloud.yml
 
 - name: You're good to go for Nextcloud installation
   debug:

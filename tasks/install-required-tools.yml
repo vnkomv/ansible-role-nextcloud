@@ -1,0 +1,12 @@
+---
+- name: Install pip packages
+  pip:
+    name: "{{ pip_packages }}"
+    executable: pip
+    state: present
+
+- name: Install required OS packages
+  yum:
+    name: "{{ utilities_packages }}"
+    state: latest
+    enablerepo: epel
