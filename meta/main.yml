@@ -2,32 +2,35 @@ dependencies:
   - src: geerlingguy.repo-epel
   
   - src: geerlingguy.repo-remi
-  
-  - src: geerlingguy.apache
+
+  - src: geerlingguy.nginx
     vars:
-      apache_create_vhosts: true
-      apache_remove_default_vhost: true
-      apache_mods_enabled: "{{ webserver_modules }}"
-      apache_vhosts:
-        - servername: "local.dev"
-          documentroot: "{{ install_path }}"
-          extra_parameters: |
-              ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix://{{ php_fpm_socket }}|fcgi://localhost/{{ install_path }}"
+      nginx_vhosts: []
+      nginx_remove_default_vhost: true
+      nginx_user: "{{ webserver_user }}"
+      nginx_sendfile: "on"
+      nginx_tcp_nopush: "on"
+      nginx_tcp_nodelay: "on"
+      nginx_keepalive_timeout: "65"
+      nginx_keepalive_requests: "100"
+      nginx_client_max_body_size: "{{ webserver_max_body_size }}"
 
   - src: geerlingguy.php
     vars:
+      php_webserver_daemon: "nginx"
       php_packages: "{{ php_extensions }}"
       php_enable_php_fpm: true
       php_fpm_state: started
       php_fpm_enabled_on_boot: true
       php_use_managed_ini: true
       php_enable_apc: true
-      php_enablerepo: remi-php72
+      php_enablerepo: "remi-{{ php_version }}"
       php_packages_state: latest
       php_fpm_listen: "{{ php_fpm_socket }}"
+      php_fpm_pool_user: "{{ webserver_user }}"
+      php_fpm_pool_group: "{{ webserver_user }}"
 
-  - src: geerlingguy.apache-php-fpm
-
+  
   - src: geerlingguy.mysql
     become: yes
     vars:
@@ -46,7 +49,7 @@ dependencies:
   - src: geerlingguy.redis
     vars:
       redis_enablerepo: epel
-      # redis_unixsocket: "{{ redis_socket }}"
+      redis_unixsocket: "{{ redis_socket }}"
 
 
 galaxy_info:
@@ -66,7 +69,7 @@ galaxy_info:
   # - CC-BY-4.0
   license: license (MIT)
 
-  min_ansible_version: 2.0
+  min_ansible_version: 2.2
 
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:

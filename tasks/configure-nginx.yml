@@ -1,0 +1,9 @@
+---
+
+- include_tasks: install-self-signed-certificate.yml
+
+- name: Generate webserver configuration
+  template:
+    src: server.conf.j2
+    dest: "{{ webserver_site_conf_dir }}/nextcloud.conf"
+  notify: restart nginx
