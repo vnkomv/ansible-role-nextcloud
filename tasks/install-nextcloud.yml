@@ -56,11 +56,32 @@
   changed_when: true
   when: nextcloud_server_ip is defined
 
+# configure audit log
 - name: Configure audit log
   command: 'php {{ nextcloud_root }}/occ config:app:set admin_audit logfile --value "{{ nextcloud_audit_log_dir }}/audit.log"'
   become: true
   become_user: "{{ webserver_user }}"
-  changed_when: true
+  changed_when: true 
+
+# Enable some recommanded apps
+- name: Enable some recommanded apps
+  command: 'php {{ nextcloud_root }}/occ app:enable {{ item }}'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true 
+  loop:
+    - user_ldap
+    - admin_audit
+    - files_external
+
+- name: Install and enable group folders app
+  command: 'php {{ nextcloud_root }}/occ app:{{ item }} groupfolders'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true 
+  loop:
+    - install
+    - enable
 
 # performance tuning
 - name: nextcloud tuning - configure APCu for local caching
