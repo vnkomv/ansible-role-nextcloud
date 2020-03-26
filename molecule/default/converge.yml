@@ -5,5 +5,5 @@
     - name: "Include vnkomv.nextcloud"
       include_role:
         name: "vnkomv.nextcloud"
-        vars:
-          nextcloud_server_ip: 51.15.219.165
+      vars:
+        nextcloud_server_ip: 51.15.219.165

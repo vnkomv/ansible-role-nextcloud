@@ -29,6 +29,13 @@ dependencies:
       php_fpm_listen: "{{ php_fpm_socket }}"
       php_fpm_pool_user: "{{ webserver_user }}"
       php_fpm_pool_group: "{{ webserver_user }}"
+      php_memory_limit: "{{ ___php_memory_limit }}"
+      php_max_execution_time: "{{ ___php_max_execution_time }}"
+      php_enable_webserver: true
+      php_opcache_enable: "1"
+      php_opcache_enable_cli: "1"
+      php_upload_max_filesize: "{{ ___php_upload_max_filesize }}"
+      php_post_max_size: "{{ ___php_post_max_size }}"
 
   
   - src: geerlingguy.mysql

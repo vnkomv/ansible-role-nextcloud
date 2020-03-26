@@ -9,6 +9,7 @@ nextcloud_archive: https://download.nextcloud.com/server/releases/latest-18.zip
 nextcloud_archive_md5: cb08e30172ef71be28ed2119642871ad
 nextcloud_admin_user: admin
 nextcloud_admin_password: password
+nextcloud_audit_log_dir: /var/log/nextcloud
 
 # utilities
 utilities_packages:
@@ -29,7 +30,7 @@ ssl_certificate_key: /etc/ssl/nginx/nextcloud.key
 
 # database
 db_name: nextcloud
-db_user: nexcloud
+db_user: nextcloud
 db_password: secure-password
 
 # redis

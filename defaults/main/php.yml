@@ -1,17 +1,17 @@
 ---
 # defaults for PHP
-php_memory_limit: "1024M"
-php_max_file_uploads: "100"
-php_upload_max_filesize: "2048M"
-php_max_execution_time: "150"
-php_opcache_enable: "1"
-php_opcache_enable_cli: "1"
+___php_memory_limit: "1024M"
+___php_upload_max_filesize: 2048M
+___php_max_file_uploads: "100"
+___php_post_max_size: "2048M"
+___php_max_execution_time: "150"
 php_version: php73
 php_fpm_socket: /var/run/php73-fpm.sock
-php_fpm_pool_user: nginx
-php_fpm_pool_group: nginx
-php_webserver_daemon: nginx
-php_enable_webserver: true
+
+php_fpm_session_dir: /var/lib/php/session
+php_fpm_opcache_dir: /var/lib/php/opcache
+php_fpm_wsdlcache_dir: /var/lib/php/wsdlcache
+
 php_extensions:
   - php
   - php-opcache

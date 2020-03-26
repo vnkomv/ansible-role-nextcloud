@@ -16,13 +16,22 @@
   loop:
     - "{{ nextcloud_root }}"
     - "{{ nextcloud_data_dir }}"
+    - "{{ nextcloud_audit_log_dir }}"
 
 - name: Ensure occ is executable
   file:
     path: "{{ nextcloud_root }}/occ"
     mode: a+x
 
-- name: Install nextcloud
+# If installation command is not existing, nextcloud has already been installed
+- name: Verify installation command existence
+  shell: 'php {{ nextcloud_root | quote }}/occ | grep maintenance:install'
+  become: true
+  become_user: "{{ webserver_user }}"
+  register: check_install
+  failed_when: check_install.rc != 1 and check_install.rc != 0
+
+- name: Install nextcloud if not already installed.
   command: >
     php {{ nextcloud_root }}/occ maintenance:install --database "mysql" --database-name "{{ db_name }}"
     --database-user "{{ db_user }}" --database-pass "{{ db_password }}"
@@ -30,6 +39,7 @@
   become: true
   become_user: "{{ webserver_user }}"
   changed_when: true
+  when: "'maintenance:install' in check_install.stdout"
 
 # configure trusted host to allow access
 - name: Add hostname to trusted host if defined
@@ -37,8 +47,17 @@
   become: true
   become_user: "{{ webserver_user }}"
   changed_when: true
+  when: nextcloud_server_host is defined
+
 - name: Add ip adress to trusted host if defined
   command: 'php {{ nextcloud_root }}/occ config:system:set trusted_domains 2 --value "{{ nextcloud_server_ip }}"'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+  when: nextcloud_server_ip is defined
+
+- name: Configure audit log
+  command: 'php {{ nextcloud_root }}/occ config:app:set admin_audit logfile --value "{{ nextcloud_audit_log_dir }}/audit.log"'
   become: true
   become_user: "{{ webserver_user }}"
   changed_when: true
