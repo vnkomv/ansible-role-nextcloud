@@ -4,7 +4,9 @@
     src: "{{ nextcloud_archive }}"
     dest: "{{ webserver_root }}"
     owner: "{{ webserver_user }}"
+    group: "{{ webserver_group }}"
     remote_src: true
+    creates: "{{ nextcloud_root }}"
 
 - name: Create directories
   file:
@@ -41,6 +43,7 @@
   changed_when: true
   when: "'maintenance:install' in check_install.stdout"
 
+
 # configure trusted host to allow access
 - name: Add hostname to trusted host if defined
   command: 'php {{ nextcloud_root }}/occ config:system:set trusted_domains 1 --value "{{ nextcloud_server_host }}"'
@@ -63,25 +66,46 @@
   become_user: "{{ webserver_user }}"
   changed_when: true 
 
-# Enable some recommanded apps
-- name: Enable some recommanded apps
+- name: Enable already desired featured apps
   command: 'php {{ nextcloud_root }}/occ app:enable {{ item }}'
   become: true
   become_user: "{{ webserver_user }}"
   changed_when: true 
-  loop:
-    - user_ldap
-    - admin_audit
-    - files_external
+  loop: "{{ nextcloud_featured_apps }}"
 
-- name: Install and enable group folders app
+- name: Verify if group_folders apps is installed
+  shell: 'php {{ nextcloud_root | quote }}/occ app:list | grep groupfolders'
+  become: true
+  become_user: "{{ webserver_user }}"
+  register: check_groupfolder_install
+  failed_when: check_groupfolder_install.rc != 1 and check_groupfolder_install.rc != 0
+
+- name: Install and enable group_folders app
   command: 'php {{ nextcloud_root }}/occ app:{{ item }} groupfolders'
+  become: true
+  become_user: "{{ webserver_user }}"
+  changed_when: true
+  loop:
+    - install
+    - enable
+  when: "'groupfolders' not in check_groupfolder_install.stdout"
+
+- name: Verify if files_antivirus app is installed
+  shell: 'php {{ nextcloud_root | quote }}/occ app:list | grep files_antivirus'
+  become: true
+  become_user: "{{ webserver_user }}"
+  register: check_files_antivirus_install
+  failed_when: check_files_antivirus_install.rc != 1 and check_files_antivirus_install.rc != 0
+
+- name: Install and enable files_antivirus app
+  command: 'php {{ nextcloud_root }}/occ app:{{ item }} files_antivirus'
   become: true
   become_user: "{{ webserver_user }}"
   changed_when: true 
   loop:
     - install
     - enable
+  when: "'files_antivirus' not in check_files_antivirus_install.stdout"
 
 # performance tuning
 - name: nextcloud tuning - configure APCu for local caching

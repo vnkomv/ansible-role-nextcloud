@@ -37,3 +37,8 @@ db_password: secure-password
 redis_socket_folder: /var/run/redis
 redis_socket: /var/run/redis/redis.sock
 redis_config_file: /etc/redis.conf
+
+# clamav antivirus
+freshclam_conf: /etc/freshclam.conf
+clamav_scan_conf: /etc/clamd.d/scan.conf
+clamav_socket: /run/clamd.scan/clamd.sock

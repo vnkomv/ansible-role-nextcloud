@@ -1,0 +1,38 @@
+---
+- name: Install Clamav antivirus
+  yum:
+    name:
+      - clamav 
+      - clamav-scanner-systemd
+      - clamav-server
+      - clamav-server-systemd 
+      - clamav-update
+    state: latest
+    enablerepo: epel
+
+- name: Configure clamav db scans
+  lineinfile:
+    dest: "{{ clamav_scan_conf }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: '^LocalSocket .+$', line: "LocalSocket {{ clamav_socket }}" }
+
+- name: Download antiviral database
+  command: freshclam
+
+- name: Schedule antiviral database update
+  cron:
+    name: "clamav db update"
+    minute: "43"
+    hour: "*"
+    weekday: "*"
+    month: "*"
+    job: "/usr/bin/freshclam --quiet"
+
+- name: Enable scan service
+  service:
+    name: clamd@scan
+    enabled: yes
+    state: started

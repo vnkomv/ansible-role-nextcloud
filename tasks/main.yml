@@ -9,6 +9,9 @@
 - include_tasks: configure-php-fpm.yml
 - include_tasks: configure-redis.yml
 
+# install other required components
+- include_tasks: install-clamav.yml
+
 # install and configure nextcloud
 - include_tasks: install-nextcloud.yml
 
