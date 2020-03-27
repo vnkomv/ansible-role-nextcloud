@@ -10,6 +10,10 @@ nextcloud_archive_md5: cb08e30172ef71be28ed2119642871ad
 nextcloud_admin_user: admin
 nextcloud_admin_password: password
 nextcloud_audit_log_dir: /var/log/nextcloud
+nextcloud_featured_apps: 
+  - user_ldap
+  - admin_audit
+  - files_external
 
 # utilities
 utilities_packages:
